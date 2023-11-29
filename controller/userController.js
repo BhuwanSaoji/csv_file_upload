@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const csv = require("csvtojson")
 const fs = require("fs")
-var formidable = require('formidable');
 const { User } = require("../Schema/UserSchema");
-const cron = require("cron")
+const cron = require("cron");
+const os = require("os")
 
 exports.uploadUsers = (req, res) => {
     return new Promise(async (resolve, reject) => {
@@ -28,8 +28,8 @@ exports.uploadUsers = (req, res) => {
                 )
             }
 
-
-            fs.writeFile("C:/Users/BhuwanSaoji.AzureAD/Desktop/js/mongodb/controller/temp/user_upload.csv", file.user_upload.data, (err) => {
+            os.cwd()
+            fs.writeFile(process.cwd()+"/temp/user_upload.csv", file.user_upload.data, (err) => {
                 if (err) {
                     console.error("err", err);
                     return reject({
@@ -66,8 +66,8 @@ exports.readFile = () => {
     return new Promise(async (resolve, reject) => {
         try {
 
-            if(fs.existsSync("C:/Users/BhuwanSaoji.AzureAD/Desktop/js/mongodb/controller/temp/user_upload.csv") )
-                fs.readFile("C:/Users/BhuwanSaoji.AzureAD/Desktop/js/mongodb/controller/temp/user_upload.csv", async (err, file) => {
+            if(fs.existsSync(process.cwd() + "/temp/user_upload.csv") )
+                fs.readFile( process.cwd() +"/temp/user_upload.csv", async (err, file) => {
                     if (err) {
                         console.error(err);
                         return reject({
@@ -78,7 +78,7 @@ exports.readFile = () => {
                     }
                     const users = await csv().fromString(file.toString());
                     if (!users || users.length == 0) {
-                        fs.promises.unlink("C:/Users/BhuwanSaoji.AzureAD/Desktop/js/mongodb/controller/temp/user_upload.csv")
+                        fs.promises.unlink(process.cwd()+ "/temp/user_upload.csv")
 
                         return reject({
                             status: "error",
